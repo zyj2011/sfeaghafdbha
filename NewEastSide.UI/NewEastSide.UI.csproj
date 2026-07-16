@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <ApplicationIcon>..\641.ico</ApplicationIcon>
+        <AssemblyName>NewEastSide</AssemblyName>
+        <RootNamespace>NewEastSide.UI</RootNamespace>
+        <Version>1.0.0</Version>
+        <Authors>NewEastSide</Authors>
+        <Description>NewEastSide - 每个人都用得起的脱盒</Description>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Photino.NET" Version="3.1.18" />
+        <PackageReference Include="Serilog" Version="4.3.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\NewEastSide\NewEastSide.csproj" />
+        <ProjectReference Include="..\NewEastSide.Core\NewEastSide.Core.csproj" />
+    </ItemGroup>
+
+    <!-- 将 wwwroot 嵌入为资源，运行时释放 -->
+    <ItemGroup>
+        <Content Remove="wwwroot\**" />
+        <None Remove="wwwroot\**" />
+        <EmbeddedResource Include="wwwroot\**">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <!-- 复制图标到输出目录 -->
+    <ItemGroup>
+        <None Include="..\641.ico" CopyToOutputDirectory="PreserveNewest" Link="641.ico" />
+    </ItemGroup>
+
+</Project>

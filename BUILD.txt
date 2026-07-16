@@ -1,0 +1,35 @@
+=== NewEastSide 打包指南 ===
+
+1. 打包主程序到桌面：
+
+   在项目根目录运行：
+   dotnet publish NewEastSide.UI/NewEastSide.UI.csproj -c Release -r win-x64 --self-contained true
+
+   发布后的文件位于：
+   NewEastSide.UI/bin/Release/net9.0-windows/win-x64/publish/
+
+   可以将 publish 文件夹复制到桌面，或创建快捷方式指向 NewEastSide.exe。
+
+
+2. 卡密生成器打包：
+
+   在项目根目录运行：
+   dotnet publish LicenseKeyGenerator/LicenseKeyGenerator.csproj -c Release -r win-x64 --self-contained true
+
+   发布后的文件位于：
+   LicenseKeyGenerator/bin/Release/net9.0/win-x64/publish/
+
+   可执行文件为 NewEastSide.LicenseGenerator.exe。
+
+
+3. 一键打包脚本（可选）：
+
+   创建 build.bat：
+
+   @echo off
+   echo Building NewEastSide...
+   dotnet publish NewEastSide.UI/NewEastSide.UI.csproj -c Release -r win-x64 --self-contained true
+   echo Building LicenseKeyGenerator...
+   dotnet publish LicenseKeyGenerator/LicenseKeyGenerator.csproj -c Release -r win-x64 --self-contained true
+   echo Done!
+   pause

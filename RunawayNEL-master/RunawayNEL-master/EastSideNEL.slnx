@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="NewEastSide/NewEastSide.csproj" />
+  <Project Path="NewEastSide.Core/NewEastSide.Core.csproj" />
+  <Project Path="NewEastSide.UI/NewEastSide.UI.csproj" />
+  <Project Path="NewEastSide.IRC/NewEastSide.IRC.csproj" />
+</Solution>

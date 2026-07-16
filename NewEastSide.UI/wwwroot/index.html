@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NewEastSide - 登录</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #f3f4f6;
+      --panel: rgba(255,255,255,0.72);
+      --line: rgba(15, 23, 42, 0.08);
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #2f6bff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Display", "SF Pro Text", "Segoe UI", "PingFang SC", sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, #f8f9fc 0%, #eef2f7 42%, #e9eef6 100%);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .app {
+      height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%; max-width: 420px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.10);
+      backdrop-filter: blur(24px);
+    }
+    .brand { text-align: center; margin-bottom: 24px; }
+    .brand h1 { margin: 0 0 6px; font-size: 24px; }
+    .brand p { margin: 0; color: var(--muted); font-size: 13px; }
+    .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    label { font-size: 13px; color: #374151; font-weight: 600; }
+    input {
+      border: 1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.8);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(47,107,255,0.14); }
+    .row { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 18px; font-size: 12px; color: var(--muted); }
+    .btn {
+      width: 100%; border: none; border-radius: 12px; padding: 12px 14px; font-size: 14px; font-weight: 700; cursor: pointer;
+      background: linear-gradient(135deg, #111827, var(--accent)); color: white;
+      box-shadow: 0 10px 20px rgba(47,107,255,0.16);
+    }
+    .footer { margin-top: 16px; text-align: center; font-size: 13px; color: var(--muted); }
+    .link { color: var(--accent); cursor: pointer; text-decoration: none; }
+    .status { margin-top: 12px; min-height: 20px; font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <div class="brand">
+        <h1>NewEastSide</h1>
+        <p>连接到你自己的服务器</p>
+      </div>
+      <div class="field">
+        <label for="serverUrl">服务器地址</label>
+        <input id="serverUrl" value="http://121.199.60.93:1" placeholder="http://你的服务器地址:端口" />
+      </div>
+      <div class="field">
+        <label for="username">账号</label>
+        <input id="username" value="dev" autocomplete="username" placeholder="请输入账号或邮箱" />
+      </div>
+      <div class="field">
+        <label for="password">密码</label>
+        <input id="password" type="password" value="zyjZYJ2011" autocomplete="current-password" placeholder="请输入密码" />
+      </div>
+      <div class="row">
+        <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" /> 记住我</label>
+        <a class="link" href="#">忘记密码?</a>
+      </div>
+      <button class="btn" onclick="doLogin()">登录</button>
+      <div class="footer">没有账号？ <a class="link" href="#">立即注册</a></div>
+      <div class="status" id="status">正在等待登录...</div>
+    </div>
+  </div>
+  <script>
+    async function doLogin() {
+      const serverUrl = document.getElementById('serverUrl').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const status = document.getElementById('status');
+
+      if (!serverUrl || !username || !password) {
+        status.textContent = '请填写服务器地址、账号和密码。';
+        return;
+      }
+
+      const normalizedUrl = serverUrl.replace(/\/+$/, '');
+      const endpoint = `${normalizedUrl}/auth/login`;
+      status.textContent = `正在连接 ${endpoint} ...`;
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const text = await response.text();
+        let payload = null;
+        try {
+          payload = JSON.parse(text);
+        } catch (e) {
+          payload = { message: text };
+        }
+
+        if (!response.ok) {
+          status.textContent = payload?.message || '登录失败，请检查服务器地址和接口。';
+          return;
+        }
+
+        const token = payload?.token || payload?.data?.token || payload?.result?.token || payload?.access_token;
+        if (token) {
+          status.textContent = '登录成功，已拿到令牌。';
+        } else {
+          status.textContent = payload?.message || '登录成功，但未返回令牌。';
+        }
+      } catch (error) {
+        status.textContent = `登录失败: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
